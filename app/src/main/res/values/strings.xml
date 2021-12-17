@@ -1,0 +1,39 @@
+<resources>
+    <!--    AndroidManifest-->
+    <string name="app_name">Tokenlab</string>
+    <!--    item_movie.xml-->
+    <string name="item_movie_content_description_movie_image">Imagem do filme</string>
+    <string name="item_movie_button_text">Ver detalhes</string>
+    <string name="item_movie_release_date_date">Data de estreia:</string>
+    <string name="item_movie_vote_average_text">Nota:</string>
+    <!--    activity_movie_details.xml-->
+    <string name="movie_details_content_description_movie_image">Imagem do filme selecionado</string>
+    <string name="movie_details_release_gender_text">Gênero:</string>
+    <string name="movie_details_vote_average_text">Nota:</string>
+    <string name="movie_details_spoken_languages_text">Disponível em:</string>
+    <string name="movie_details_production_country_text">Produzido em:</string>
+    <string name="movie_details_production_company_text">Empresas que produziram:</string>
+    <!--    Generics Error-->
+    <string name="fill_the_field">Preencha o campo</string>
+    <string name="occurred_error">Ocorreu um erro. Tente novamente</string>
+    <string name="error_connection_fail">Falha na conexão. Tente novamente</string>
+    <!--    LoginActivity-->
+    <string name="login_incorrect_email">Preencha em um formato válido. Exemplo: nome@nome.com.br</string>
+    <string name="login_error_email_password">Credenciais inválida. Tente novamente</string>
+    <!--    Alert Dialog Messages-->
+    <string name="alert_dialog_text">OK</string>
+    <!--    MainActivity-->
+    <string name="main_tool_bar_title_text">Lista de filmes</string>
+    <!--    MovieDetailsActivity-->
+    <string name="movie_details_tool_bar_title_text">Detalhes do filme</string>
+    <string name="movie_details_vote_count_text">Votos:</string>
+    <string name="movie_details_original_language_text">Linguagem original:</string>
+    <string name="movie_details_original_title_text">Título original:</string>
+    <string name="movie_details_belongs_to_collection_text">Pertence a coleção:</string>
+    <string name="movie_details_release_date_movie_text">Data de lançamento:</string>
+    <string name="movie_details_tagline_text">Slogan:</string>
+<!--    item_production_company.xml-->
+    <string name="item_production_company_name_text">Nome:</string>
+    <string name="item_production_company_country_text">País:</string>
+    <string name="item_production_company_image_content_description">Imagem da empresa</string>
+</resources>
