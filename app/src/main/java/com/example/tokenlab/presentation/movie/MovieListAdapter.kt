@@ -1,59 +1,38 @@
 package com.example.tokenlab.presentation.movie
 
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import android.widget.Button
-import android.widget.ImageView
-import android.widget.TextView
-import androidx.recyclerview.widget.RecyclerView
 import com.example.tokenlab.R
+import com.example.tokenlab.databinding.ItemMovieBinding
 import com.example.tokenlab.domain.model.movie.Movie
 import com.example.tokenlab.extensions.convertToValidDateFormat
 import com.example.tokenlab.extensions.downloadImage
+import com.xwray.groupie.GroupAdapter
+import com.xwray.groupie.GroupieViewHolder
+import com.xwray.groupie.viewbinding.BindableItem
 
-class MovieListAdapter(
-    private val movieList: List<Movie>,
-    private val onMovieButtonClickListener: (Int) -> Unit
-) : RecyclerView.Adapter<MovieListAdapter.MovieListViewHolder>() {
-
-
-    override fun onCreateViewHolder(
-        parent: ViewGroup,
-        viewType: Int
-    ): MovieListViewHolder {
-        return MovieListViewHolder(
-            LayoutInflater.from(parent.context).inflate(
-                R.layout.item_movie,
-                parent, false
-            )
-        )
+class MovieListAdapter(private val onMovieButtonClickListener: (Int) -> Unit) :
+    GroupAdapter<GroupieViewHolder>() {
+    fun setData(movieList: List<Movie>) {
+        movieList.forEach { movie ->
+            add(MovieItem(movie))
+        }
     }
 
-    override fun onBindViewHolder(holder: MovieListViewHolder, position: Int) {
-        holder.bind(movieList[position], onMovieButtonClickListener)
-    }
+    private inner class MovieItem(
+        private val movie: Movie,
+    ) : BindableItem<ItemMovieBinding>() {
+        override fun bind(viewBinding: ItemMovieBinding, position: Int) {
+            viewBinding.itemMovieImageView.downloadImage(movie.imageUrl)
+            viewBinding.itemMovieTitleTextView.text = movie.title
+            viewBinding.itemMovieDateTextView.text = movie.releaseDate.convertToValidDateFormat()
+            viewBinding.itemMovieVoteAverageTextView.text = movie.voteAverage.toString()
+            viewBinding.itemMovieButton.setOnClickListener { onMovieButtonClickListener.invoke(movie.id) }
+        }
 
-    override fun getItemCount(): Int {
-        return movieList.size
-    }
+        override fun getLayout() = R.layout.item_movie
 
-    inner class MovieListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        private val itemMovieImageView: ImageView = itemView.findViewById(R.id.itemMovieImageView)
-        private val itemMovieTitleTextView: TextView =
-            itemView.findViewById(R.id.itemMovieTitleTextView)
-        private val itemMovieDateTextView: TextView =
-            itemView.findViewById(R.id.itemMovieDateTextView)
-        private val itemMovieVoteAverageTextView: TextView =
-            itemView.findViewById(R.id.itemMovieVoteAverageTextView)
-        private val itemMovieButton: Button = itemView.findViewById(R.id.itemMovieButton)
-
-        fun bind(movieList: Movie, onMovieButtonClickListener: (Int)->Unit) {
-            itemMovieImageView.downloadImage(movieList.imageUrl)
-            itemMovieTitleTextView.text = movieList.title
-            itemMovieDateTextView.text = movieList.releaseDate.convertToValidDateFormat()
-            itemMovieVoteAverageTextView.text = movieList.voteAverage.toString()
-            itemMovieButton.setOnClickListener { onMovieButtonClickListener.invoke(movieList.id) }
+        override fun initializeViewBinding(view: View): ItemMovieBinding {
+            return ItemMovieBinding.bind(view)
         }
     }
 }

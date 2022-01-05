@@ -1,53 +1,35 @@
 package com.example.tokenlab.presentation.movie_details
 
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
-import androidx.recyclerview.widget.RecyclerView
 import com.example.tokenlab.R
+import com.example.tokenlab.databinding.ItemProductionCompanyBinding
 import com.example.tokenlab.domain.model.movie_details.production_company.ProductionCompany
 import com.example.tokenlab.extensions.downloadImage
+import com.xwray.groupie.GroupAdapter
+import com.xwray.groupie.GroupieViewHolder
+import com.xwray.groupie.viewbinding.BindableItem
 
-class ProductionCompanyListAdapter(private val productionCompanyList: List<ProductionCompany>) :
-    RecyclerView.Adapter<ProductionCompanyListAdapter.ProductionCompanyViewHolder>() {
-
-    override fun onCreateViewHolder(
-        parent: ViewGroup,
-        viewType: Int
-    ): ProductionCompanyViewHolder {
-        return ProductionCompanyViewHolder(
-            LayoutInflater.from(parent.context).inflate(
-                R.layout.item_production_company,
-                parent, false
-            )
-        )
+class ProductionCompanyListAdapter :
+    GroupAdapter<GroupieViewHolder>() {
+    fun setData(productionCompanyList: List<ProductionCompany>) {
+        productionCompanyList.forEach { productionCompany ->
+            add(ProductionCompanyItem(productionCompany))
+        }
     }
 
-    override fun onBindViewHolder(
-        holder: ProductionCompanyViewHolder,
-        position: Int
-    ) {
-        holder.bind(productionCompanyList[position])
-    }
+    private inner class ProductionCompanyItem(
+        private val productionCompany: ProductionCompany,
+    ) : BindableItem<ItemProductionCompanyBinding>() {
+        override fun bind(viewBinding: ItemProductionCompanyBinding, position: Int) {
+            viewBinding.itemProductionCompanyNameTextView.text = productionCompany.name
+            viewBinding.itemProductionCompanyCountryTextView.text = productionCompany.originCountry
+            viewBinding.itemProductionCompanyImageView.downloadImage(productionCompany.logoUrl)
+        }
 
-    override fun getItemCount(): Int {
-        return productionCompanyList.size
-    }
+        override fun getLayout() = R.layout.item_production_company
 
-    inner class ProductionCompanyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        private val itemProductionCompanyNameTextView: TextView =
-            itemView.findViewById(R.id.itemProductionCompanyNameTextView)
-        private val itemProductionCompanyCountryTextView: TextView =
-            itemView.findViewById(R.id.itemProductionCompanyCountryTextView)
-        private val itemProductionCompanyImageView: ImageView =
-            itemView.findViewById(R.id.itemProductionCompanyImageView)
-
-        fun bind(productionCompany: ProductionCompany) {
-            itemProductionCompanyNameTextView.text = productionCompany.name
-            itemProductionCompanyCountryTextView.text = productionCompany.originCountry
-            itemProductionCompanyImageView.downloadImage(productionCompany.logoUrl)
+        override fun initializeViewBinding(view: View): ItemProductionCompanyBinding {
+            return ItemProductionCompanyBinding.bind(view)
         }
     }
 }

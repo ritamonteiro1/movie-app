@@ -16,7 +16,10 @@ import com.example.tokenlab.data.repository.MovieRepository
 import com.example.tokenlab.databinding.ActivityMovieDetailsBinding
 import com.example.tokenlab.domain.data_repository.MovieDataRepository
 import com.example.tokenlab.domain.model.movie_details.details.MovieDetails
-import com.example.tokenlab.domain.model.movie_details.movie_details_list.MovieDetailsItem
+import com.example.tokenlab.domain.model.movie_details.movie_details_list.MovieDetailsElement
+import com.example.tokenlab.domain.model.movie_details.production_company.ProductionCompany
+import com.example.tokenlab.domain.model.movie_details.production_country.ProductionCountry
+import com.example.tokenlab.domain.model.movie_details.spoken_language.SpokenLanguage
 import com.example.tokenlab.domain.use_case.GetMovieDetailsUseCase
 import com.example.tokenlab.domain.use_case.GetMovieDetailsUseCaseImpl
 import com.example.tokenlab.extensions.*
@@ -59,9 +62,9 @@ class MovieDetailsActivity : AppCompatActivity() {
     private fun setupNetworkErrorObserver() {
         setScrollViewVisibility(View.GONE)
         viewModel.networkError.observe(this, {
-                this@MovieDetailsActivity.showErrorDialogWithAction(
-                    getString(R.string.network_error)
-                ) { _, _ -> finish() }
+            this@MovieDetailsActivity.showErrorDialogWithAction(
+                getString(R.string.network_error)
+            ) { _, _ -> finish() }
         })
     }
 
@@ -86,61 +89,87 @@ class MovieDetailsActivity : AppCompatActivity() {
 
     private fun setupMovieDetailsObserver() {
         viewModel.movieDetails.observe(this, { movieDetails ->
-            val movieDetailsList = mapToMovieDetailsList(movieDetails)
-            showMovieDetails(movieDetails, movieDetailsList)
+            val movieDetailsElementList = mapToMovieDetailsElementList(movieDetails)
+            showMovieDetails(movieDetails, movieDetailsElementList)
             setScrollViewVisibility(View.VISIBLE)
         })
     }
 
-    private fun setScrollViewVisibility(visibility: Int){
+    private fun setScrollViewVisibility(visibility: Int) {
         binding.movieDetailsScrollView.visibility = visibility
     }
 
-    private fun mapToMovieDetailsList(movieDetails: MovieDetails): List<MovieDetailsItem> {
+    private fun mapToMovieDetailsElementList(movieDetails: MovieDetails): List<MovieDetailsElement> {
         return listOf(
-            MovieDetailsItem(
+            MovieDetailsElement(
                 getString(R.string.movie_details_release_date_movie_text),
                 movieDetails.releaseDate.convertToValidDateFormat()
             ),
-            MovieDetailsItem(
+            MovieDetailsElement(
                 getString(R.string.movie_details_vote_count_text),
                 movieDetails.voteCount.toString()
             ),
-            MovieDetailsItem(
+            MovieDetailsElement(
                 getString(R.string.movie_details_original_language_text),
                 movieDetails.originalLanguage
             ),
-            MovieDetailsItem(
+            MovieDetailsElement(
                 getString(R.string.movie_details_original_title_text),
                 movieDetails.originalTitle
             ),
-            MovieDetailsItem(getString(R.string.movie_details_tagline_text), movieDetails.tagline)
+            MovieDetailsElement(
+                getString(R.string.movie_details_tagline_text),
+                movieDetails.tagline
+            )
         )
     }
 
     private fun showMovieDetails(
         movieDetails: MovieDetails,
-        movieDetailsItem: List<MovieDetailsItem>
+        movieDetailElementList: List<MovieDetailsElement>
     ) {
         binding.movieDetailsTitleTextView.text = movieDetails.title
         binding.movieDetailsVoteAverageTextView.text = movieDetails.voteAverage.toString()
         binding.movieDetailsImageView.downloadImage(movieDetails.imageUrl)
-        val movieDetailsListAdapter = MovieDetailsAdapter(movieDetailsItem)
-        setupMovieDetailsListAdapter(movieDetailsListAdapter)
-        val genderListAdapter = GenderListAdapter(movieDetails.genres)
-        setupGenderListAdapter(genderListAdapter)
-        val spokenLanguageListAdapter = SpokenLanguageListAdapter(movieDetails.spokenLanguages)
-        setupSpokenLanguageListAdapter(spokenLanguageListAdapter)
-        val productionCompanyListAdapter =
-            ProductionCompanyListAdapter(movieDetails.productionCompanies)
-        setupProductionCompanyListAdapter(productionCompanyListAdapter)
-        val productionCountryListAdapter =
-            ProductionCountryListAdapter(movieDetails.productionCountries)
-        setupProductionCountryListAdapter(productionCountryListAdapter)
+        createMovieDetailsElementListAdapter(movieDetailElementList)
+        createGenderListAdapter(movieDetails.genres)
+        createSpokenLanguageListAdapter(movieDetails.spokenLanguages)
+        createProductionCompanyListAdapter(movieDetails.productionCompanies)
+        createProductionCountryListAdapter(movieDetails.productionCountries)
     }
 
-    private fun setupMovieDetailsListAdapter(movieDetailsAdapter: MovieDetailsAdapter) {
-        binding.movieDetailsRecyclerView.adapter = movieDetailsAdapter
+    private fun createProductionCountryListAdapter(productionCountryList: List<ProductionCountry>){
+        val productionCountryListAdapter = ProductionCountryListAdapter()
+        setupProductionCountryListAdapter(productionCountryListAdapter)
+        productionCountryListAdapter.setData(productionCountryList)
+    }
+
+    private fun createProductionCompanyListAdapter(productionCompanyList: List<ProductionCompany>) {
+        val productionCompanyListAdapter = ProductionCompanyListAdapter()
+        setupProductionCompanyListAdapter(productionCompanyListAdapter)
+        productionCompanyListAdapter.setData(productionCompanyList)
+    }
+
+    private fun createSpokenLanguageListAdapter(spokenLanguageList: List<SpokenLanguage>) {
+        val spokenLanguageListAdapter = SpokenLanguageListAdapter()
+        setupSpokenLanguageListAdapter(spokenLanguageListAdapter)
+        spokenLanguageListAdapter.setData(spokenLanguageList)
+    }
+
+    private fun createGenderListAdapter(genderList: List<String>) {
+        val genderListAdapter = GenderListAdapter()
+        setupGenderListAdapter(genderListAdapter)
+        genderListAdapter.setData(genderList)
+    }
+
+    private fun createMovieDetailsElementListAdapter(movieDetailElementList: List<MovieDetailsElement>) {
+        val movieDetailsElementListAdapter = MovieDetailsElementListAdapter()
+        setupMovieDetailsAdapter(movieDetailsElementListAdapter)
+        movieDetailsElementListAdapter.setData(movieDetailElementList)
+    }
+
+    private fun setupMovieDetailsAdapter(movieDetailsElementListAdapter: MovieDetailsElementListAdapter) {
+        binding.movieDetailsRecyclerView.adapter = movieDetailsElementListAdapter
         val layoutManager = LinearLayoutManager(
             this, LinearLayoutManager.VERTICAL, false
         )

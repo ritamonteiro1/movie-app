@@ -1,46 +1,32 @@
 package com.example.tokenlab.presentation.movie_details
 
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import android.widget.TextView
-import androidx.recyclerview.widget.RecyclerView
 import com.example.tokenlab.R
+import com.example.tokenlab.databinding.ItemProductionCountryBinding
 import com.example.tokenlab.domain.model.movie_details.production_country.ProductionCountry
+import com.xwray.groupie.GroupAdapter
+import com.xwray.groupie.GroupieViewHolder
+import com.xwray.groupie.viewbinding.BindableItem
 
-class ProductionCountryListAdapter(private val productionCountryList: List<ProductionCountry>) :
-    RecyclerView.Adapter<ProductionCountryListAdapter.ProductionCountryViewHolder>() {
-
-
-    override fun onCreateViewHolder(
-        parent: ViewGroup,
-        viewType: Int
-    ): ProductionCountryViewHolder {
-        return ProductionCountryViewHolder(
-            LayoutInflater.from(parent.context).inflate(
-                R.layout.item_production_country,
-                parent, false
-            )
-        )
+class ProductionCountryListAdapter :
+    GroupAdapter<GroupieViewHolder>() {
+    fun setData(productionCountryList: List<ProductionCountry>) {
+        productionCountryList.forEach { productionCountry ->
+            add(ProductionCountryItem(productionCountry))
+        }
     }
 
-    override fun onBindViewHolder(
-        holder: ProductionCountryViewHolder,
-        position: Int
-    ) {
-        holder.bind(productionCountryList[position])
-    }
+    private inner class ProductionCountryItem(
+        private val productionCountry: ProductionCountry,
+    ) : BindableItem<ItemProductionCountryBinding>() {
+        override fun bind(viewBinding: ItemProductionCountryBinding, position: Int) {
+            viewBinding.itemProductionCountryTextView.text = productionCountry.name
+        }
 
-    override fun getItemCount(): Int {
-        return productionCountryList.size
-    }
+        override fun getLayout() = R.layout.item_production_country
 
-    inner class ProductionCountryViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        private val itemProductionCountryTextView: TextView =
-            itemView.findViewById(R.id.itemProductionCountryTextView)
-
-        fun bind(productionCountry: ProductionCountry) {
-            itemProductionCountryTextView.text = productionCountry.name
+        override fun initializeViewBinding(view: View): ItemProductionCountryBinding {
+            return ItemProductionCountryBinding.bind(view)
         }
     }
 }

@@ -82,8 +82,7 @@ class MovieListActivity : AppCompatActivity() {
                 treatMovieListEmpty()
             } else {
                 binding.movieListRecyclerView.visibility = View.VISIBLE
-                val movieListAdapter = createMovieListAdapter(movieList)
-                setupAdapter(movieListAdapter)
+                createMovieListAdapter(movieList)
             }
         })
     }
@@ -92,14 +91,16 @@ class MovieListActivity : AppCompatActivity() {
         viewModel.getMovieList()
     }
 
-
-    private fun createMovieListAdapter(movieList: List<Movie>) =
-        MovieListAdapter(movieList) { movieId ->
+    private fun createMovieListAdapter(movieList: List<Movie>){
+        val movieListAdapter = MovieListAdapter { movieId ->
             val intent =
                 Intent(this@MovieListActivity, MovieDetailsActivity::class.java)
             intent.putExtra(Constants.ID_MOVIE, movieId)
             startActivity(intent)
         }
+        setupAdapter(movieListAdapter)
+        movieListAdapter.setData(movieList)
+    }
 
     private fun setupAdapter(movieListAdapter: MovieListAdapter) {
         binding.movieListRecyclerView.adapter = movieListAdapter

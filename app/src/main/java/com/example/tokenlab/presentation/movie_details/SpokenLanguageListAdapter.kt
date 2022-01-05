@@ -1,46 +1,32 @@
 package com.example.tokenlab.presentation.movie_details
 
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import android.widget.TextView
-import androidx.recyclerview.widget.RecyclerView
 import com.example.tokenlab.R
+import com.example.tokenlab.databinding.ItemSpokenLanguageBinding
 import com.example.tokenlab.domain.model.movie_details.spoken_language.SpokenLanguage
+import com.xwray.groupie.GroupAdapter
+import com.xwray.groupie.GroupieViewHolder
+import com.xwray.groupie.viewbinding.BindableItem
 
-class SpokenLanguageListAdapter(private val spokenLanguageList: List<SpokenLanguage>) :
-    RecyclerView.Adapter<SpokenLanguageListAdapter.SpokenListViewHolder>() {
-
-
-    override fun onCreateViewHolder(
-        parent: ViewGroup,
-        viewType: Int
-    ): SpokenListViewHolder {
-        return SpokenListViewHolder(
-            LayoutInflater.from(parent.context).inflate(
-                R.layout.item_spoken_language,
-                parent, false
-            )
-        )
+class SpokenLanguageListAdapter :
+    GroupAdapter<GroupieViewHolder>() {
+    fun setData(spokenLanguageList: List<SpokenLanguage>) {
+        spokenLanguageList.forEach { spokenLanguage ->
+            add(SpokenLanguageItem(spokenLanguage))
+        }
     }
 
-    override fun onBindViewHolder(
-        holder: SpokenListViewHolder,
-        position: Int
-    ) {
-        holder.bind(spokenLanguageList[position])
-    }
+    private inner class SpokenLanguageItem(
+        private val spokenLanguage: SpokenLanguage,
+    ) : BindableItem<ItemSpokenLanguageBinding>() {
+        override fun bind(viewBinding: ItemSpokenLanguageBinding, position: Int) {
+            viewBinding.itemSpokenLanguageTextView.text = spokenLanguage.name
+        }
 
-    override fun getItemCount(): Int {
-        return spokenLanguageList.size
-    }
+        override fun getLayout() = R.layout.item_spoken_language
 
-    inner class SpokenListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        private val itemSpokenLanguageTextView: TextView =
-            itemView.findViewById(R.id.itemSpokenLanguageTextView)
-
-        fun bind(spokenLanguage: SpokenLanguage) {
-            itemSpokenLanguageTextView.text = spokenLanguage.name
+        override fun initializeViewBinding(view: View): ItemSpokenLanguageBinding {
+            return ItemSpokenLanguageBinding.bind(view)
         }
     }
 }
