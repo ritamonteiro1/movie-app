@@ -1,6 +1,7 @@
 plugins {
     id 'com.android.application'
     id 'kotlin-android'
+    id 'kotlin-kapt'
 }
 
 android {
@@ -62,4 +63,7 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifeCycleVersion"
     implementation "com.github.lisawray.groupie:groupie-viewbinding:$groupie_version"
     implementation "com.github.lisawray.groupie:groupie:$groupie_version"
+    implementation 'com.google.dagger:dagger:2.40.5'
+    kapt 'com.google.dagger:dagger-compiler:2.40.5'
+
 }

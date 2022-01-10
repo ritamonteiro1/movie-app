@@ -8,33 +8,25 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.tokenlab.R
 import com.example.tokenlab.constants.Constants
-import com.example.tokenlab.data.api.Api
-import com.example.tokenlab.data.api.MovieDataService
-import com.example.tokenlab.data.remote.remote_data_source.MovieRemoteDataSource
-import com.example.tokenlab.data.remote.remote_data_source.MovieRemoteDataSourceImpl
-import com.example.tokenlab.data.repository.MovieRepository
 import com.example.tokenlab.databinding.ActivityMovieDetailsBinding
-import com.example.tokenlab.domain.data_repository.MovieDataRepository
+import com.example.tokenlab.di.ApplicationComponent
+import com.example.tokenlab.di.DaggerApplicationComponent
 import com.example.tokenlab.domain.model.movie_details.details.MovieDetails
 import com.example.tokenlab.domain.model.movie_details.movie_details_list.MovieDetailsElement
 import com.example.tokenlab.domain.model.movie_details.production_company.ProductionCompany
 import com.example.tokenlab.domain.model.movie_details.production_country.ProductionCountry
 import com.example.tokenlab.domain.model.movie_details.spoken_language.SpokenLanguage
-import com.example.tokenlab.domain.use_case.GetMovieDetailsUseCase
-import com.example.tokenlab.domain.use_case.GetMovieDetailsUseCaseImpl
 import com.example.tokenlab.extensions.*
 import com.example.tokenlab.presentation.movie_details.*
 import java.util.*
+import javax.inject.Inject
 
 class MovieDetailsActivity : AppCompatActivity() {
-    private val movieDataService: MovieDataService =
-        Api.setupRetrofit().create(MovieDataService::class.java)
-    private val movieRemoteDataSource: MovieRemoteDataSource =
-        MovieRemoteDataSourceImpl(movieDataService)
-    private val movieRepository: MovieDataRepository = MovieRepository(movieRemoteDataSource)
-    private val getMovieDetailsUseCase: GetMovieDetailsUseCase =
-        GetMovieDetailsUseCaseImpl(movieRepository)
-    private val viewModel: MovieDetailsViewModel = MovieDetailsViewModel(getMovieDetailsUseCase)
+    private val component: ApplicationComponent? by lazy {
+        DaggerApplicationComponent.builder().build()
+    }
+    @Inject
+    lateinit var viewModel: MovieDetailsViewModel
     private lateinit var binding: ActivityMovieDetailsBinding
     private val loadingDialog: Dialog by lazy { createLoadingDialog() }
 
@@ -42,6 +34,7 @@ class MovieDetailsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMovieDetailsBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        component?.injectInMovieDetailsActivity(this)
         setupObservers()
         setupToolBar()
         val movieId = retrieverMovieId()
@@ -138,7 +131,7 @@ class MovieDetailsActivity : AppCompatActivity() {
         createProductionCountryListAdapter(movieDetails.productionCountries)
     }
 
-    private fun createProductionCountryListAdapter(productionCountryList: List<ProductionCountry>){
+    private fun createProductionCountryListAdapter(productionCountryList: List<ProductionCountry>) {
         val productionCountryListAdapter = ProductionCountryListAdapter()
         setupProductionCountryListAdapter(productionCountryListAdapter)
         productionCountryListAdapter.setData(productionCountryList)

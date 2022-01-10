@@ -9,28 +9,21 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.tokenlab.R
 import com.example.tokenlab.constants.Constants
-import com.example.tokenlab.data.api.Api
-import com.example.tokenlab.data.api.MovieDataService
-import com.example.tokenlab.data.remote.remote_data_source.MovieRemoteDataSource
-import com.example.tokenlab.data.remote.remote_data_source.MovieRemoteDataSourceImpl
-import com.example.tokenlab.data.repository.MovieRepository
 import com.example.tokenlab.databinding.ActivityMovieListBinding
-import com.example.tokenlab.domain.data_repository.MovieDataRepository
+import com.example.tokenlab.di.ApplicationComponent
+import com.example.tokenlab.di.DaggerApplicationComponent
 import com.example.tokenlab.domain.model.movie.Movie
-import com.example.tokenlab.domain.use_case.GetMovieListUseCase
-import com.example.tokenlab.domain.use_case.GetMovieListUseCaseImpl
 import com.example.tokenlab.extensions.createLoadingDialog
 import com.example.tokenlab.extensions.showErrorDialogWithAction
 import com.example.tokenlab.presentation.movie_details.MovieDetailsActivity
+import javax.inject.Inject
 
 class MovieListActivity : AppCompatActivity() {
-    private val movieDataService: MovieDataService =
-        Api.setupRetrofit().create(MovieDataService::class.java)
-    private val movieRemoteDataSource: MovieRemoteDataSource =
-        MovieRemoteDataSourceImpl(movieDataService)
-    private val movieRepository: MovieDataRepository = MovieRepository(movieRemoteDataSource)
-    private val getMovieListUseCase: GetMovieListUseCase = GetMovieListUseCaseImpl(movieRepository)
-    private val viewModel: MovieListViewModel = MovieListViewModel(getMovieListUseCase)
+    private val component: ApplicationComponent? by lazy {
+        DaggerApplicationComponent.builder().build()
+    }
+    @Inject
+    lateinit var viewModel: MovieListViewModel
     private lateinit var binding: ActivityMovieListBinding
     private val loadingDialog: Dialog by lazy { createLoadingDialog() }
 
@@ -38,6 +31,7 @@ class MovieListActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMovieListBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        component?.injectInMovieListActivity(this)
         setupObservers()
         setupToolBar()
         getMovieList()
@@ -63,10 +57,11 @@ class MovieListActivity : AppCompatActivity() {
     private fun setupNetworkErrorObserver() {
         viewModel.networkError.observe(this, {
             binding.movieListRecyclerView.visibility = View.GONE
-                this@MovieListActivity.showErrorDialogWithAction(
-                    getString(R.string.network_error)
-                ) { _, _ -> getMovieList() }
-        })}
+            this@MovieListActivity.showErrorDialogWithAction(
+                getString(R.string.network_error)
+            ) { _, _ -> getMovieList() }
+        })
+    }
 
     private fun setupGenericErrorObserver() {
         viewModel.genericError.observe(this, {
@@ -74,7 +69,8 @@ class MovieListActivity : AppCompatActivity() {
             this@MovieListActivity.showErrorDialogWithAction(
                 getString(R.string.occurred_error)
             ) { _, _ -> getMovieList() }
-        })}
+        })
+    }
 
     private fun setupMovieListObserver() {
         viewModel.movieList.observe(this, { movieList ->
@@ -91,7 +87,7 @@ class MovieListActivity : AppCompatActivity() {
         viewModel.getMovieList()
     }
 
-    private fun createMovieListAdapter(movieList: List<Movie>){
+    private fun createMovieListAdapter(movieList: List<Movie>) {
         val movieListAdapter = MovieListAdapter { movieId ->
             val intent =
                 Intent(this@MovieListActivity, MovieDetailsActivity::class.java)
