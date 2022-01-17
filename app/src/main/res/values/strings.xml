@@ -19,8 +19,11 @@
     <string name="network_error">Falha na conexão. Tente novamente</string>
     <!--    Alert Dialog Messages-->
     <string name="alert_dialog_text">OK</string>
-    <!--    MainActivity-->
-    <string name="main_tool_bar_title_text">Lista de filmes</string>
+    <!--    fragment_movie_list.xml-->
+    <string name="movie_list_tool_bar_title_text">Lista de filmes</string>
+    <!--    fragment_favorite_movie_list.xml-->
+    <string name="favorite_movie_list_tool_bar_title_text">Filmes favoritos</string>
+    <string name="favorite_movie_list_text">Lista de filmes favoritos</string>
     <!--    MovieDetailsActivity-->
     <string name="movie_details_tool_bar_title_text">Detalhes do filme</string>
     <string name="movie_details_vote_count_text">Votos:</string>
@@ -29,8 +32,11 @@
     <string name="movie_details_belongs_to_collection_text">Pertence a coleção:</string>
     <string name="movie_details_release_date_movie_text">Data de lançamento:</string>
     <string name="movie_details_tagline_text">Slogan:</string>
-<!--    item_production_company.xml-->
+    <!--    item_production_company.xml-->
     <string name="item_production_company_name_text">Nome:</string>
     <string name="item_production_company_country_text">País:</string>
     <string name="item_production_company_image_content_description">Imagem da empresa</string>
+    <!--    bottom_navigation.xml-->
+    <string name="movie_list">Lista de filmes</string>
+    <string name="favorite_movie_list">Filmes favoritos</string>
 </resources>

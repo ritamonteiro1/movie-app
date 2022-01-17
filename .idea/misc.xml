@@ -3,11 +3,17 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
-        <entry key="..\:/ProjetosAndroid/desafio2/app/src/main/res/layout/activity_main.xml" value="0.14673913043478262" />
+        <entry key="..\:/ProjetosAndroid/desafio2/app/src/main/res/layout/activity_favorite_movie_list_fragment.xml" value="0.2" />
+        <entry key="..\:/ProjetosAndroid/desafio2/app/src/main/res/layout/activity_main.xml" value="0.15" />
         <entry key="..\:/ProjetosAndroid/desafio2/app/src/main/res/layout/activity_movie_details.xml" value="0.1" />
-        <entry key="..\:/ProjetosAndroid/desafio2/app/src/main/res/layout/activity_movie_list.xml" value="0.15172101449275363" />
+        <entry key="..\:/ProjetosAndroid/desafio2/app/src/main/res/layout/activity_movie_list.xml" value="0.22" />
+        <entry key="..\:/ProjetosAndroid/desafio2/app/src/main/res/layout/fragment_favorite_movie_list.xml" value="0.13043478260869565" />
+        <entry key="..\:/ProjetosAndroid/desafio2/app/src/main/res/layout/fragment_favorite_movie_list_fragment.xml" value="0.13451086956521738" />
+        <entry key="..\:/ProjetosAndroid/desafio2/app/src/main/res/layout/fragment_flow_container.xml" value="0.1" />
+        <entry key="..\:/ProjetosAndroid/desafio2/app/src/main/res/layout/fragment_movie_list.xml" value="0.25" />
         <entry key="..\:/ProjetosAndroid/desafio2/app/src/main/res/layout/item_movie.xml" value="0.10960144927536232" />
         <entry key="..\:/ProjetosAndroid/desafio2/app/src/main/res/layout/item_movie_details.xml" value="0.1403985507246377" />
+        <entry key="..\:/ProjetosAndroid/desafio2/app/src/main/res/menu/bottom_navigation.xml" value="0.20416666666666666" />
         <entry key="..\:/ProjetosAndroid/desafio2/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.2203125" />
       </map>
     </option>

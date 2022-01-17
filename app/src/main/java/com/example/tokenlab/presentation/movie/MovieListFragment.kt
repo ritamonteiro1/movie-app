@@ -3,13 +3,15 @@ package com.example.tokenlab.presentation.movie
 import android.app.Dialog
 import android.content.Intent
 import android.os.Bundle
-import android.view.MenuItem
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.tokenlab.R
 import com.example.tokenlab.constants.Constants
-import com.example.tokenlab.databinding.ActivityMovieListBinding
+import com.example.tokenlab.databinding.FragmentMovieListBinding
 import com.example.tokenlab.di.ApplicationComponent
 import com.example.tokenlab.di.DaggerApplicationComponent
 import com.example.tokenlab.domain.model.movie.Movie
@@ -18,23 +20,40 @@ import com.example.tokenlab.extensions.showErrorDialogWithAction
 import com.example.tokenlab.presentation.movie_details.MovieDetailsActivity
 import javax.inject.Inject
 
-class MovieListActivity : AppCompatActivity() {
+class MovieListFragment : Fragment() {
     private val component: ApplicationComponent? by lazy {
         DaggerApplicationComponent.builder().build()
     }
+
     @Inject
     lateinit var viewModel: MovieListViewModel
-    private lateinit var binding: ActivityMovieListBinding
-    private val loadingDialog: Dialog by lazy { createLoadingDialog() }
+    private var binding: FragmentMovieListBinding? = null
+    private val loadingDialog: Dialog by lazy { requireContext().createLoadingDialog() }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        binding = ActivityMovieListBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+    companion object {
+        fun newInstance(): MovieListFragment = MovieListFragment()
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        binding = FragmentMovieListBinding.inflate(inflater, container, false)
+        return binding?.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         component?.injectInMovieListActivity(this)
         setupObservers()
         setupToolBar()
         getMovieList()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        binding = null
     }
 
     private fun setupObservers() {
@@ -45,7 +64,7 @@ class MovieListActivity : AppCompatActivity() {
     }
 
     private fun setupLoadingObserver() {
-        viewModel.loading.observe(this, { loading ->
+        viewModel.loading.observe(viewLifecycleOwner, { loading ->
             if (loading) {
                 loadingDialog.show()
             } else {
@@ -55,29 +74,29 @@ class MovieListActivity : AppCompatActivity() {
     }
 
     private fun setupNetworkErrorObserver() {
-        viewModel.networkError.observe(this, {
-            binding.movieListRecyclerView.visibility = View.GONE
-            this@MovieListActivity.showErrorDialogWithAction(
+        viewModel.networkError.observe(viewLifecycleOwner, {
+            binding?.movieListRecyclerView?.visibility = View.GONE
+            requireContext().showErrorDialogWithAction(
                 getString(R.string.network_error)
             ) { _, _ -> getMovieList() }
         })
     }
 
     private fun setupGenericErrorObserver() {
-        viewModel.genericError.observe(this, {
-            binding.movieListRecyclerView.visibility = View.GONE
-            this@MovieListActivity.showErrorDialogWithAction(
+        viewModel.genericError.observe(viewLifecycleOwner, {
+            binding?.movieListRecyclerView?.visibility = View.GONE
+            requireContext().showErrorDialogWithAction(
                 getString(R.string.occurred_error)
             ) { _, _ -> getMovieList() }
         })
     }
 
     private fun setupMovieListObserver() {
-        viewModel.movieList.observe(this, { movieList ->
+        viewModel.movieList.observe(viewLifecycleOwner, { movieList ->
             if (movieList.isEmpty()) {
                 treatMovieListEmpty()
             } else {
-                binding.movieListRecyclerView.visibility = View.VISIBLE
+                binding?.movieListRecyclerView?.visibility = View.VISIBLE
                 createMovieListAdapter(movieList)
             }
         })
@@ -90,7 +109,7 @@ class MovieListActivity : AppCompatActivity() {
     private fun createMovieListAdapter(movieList: List<Movie>) {
         val movieListAdapter = MovieListAdapter { movieId ->
             val intent =
-                Intent(this@MovieListActivity, MovieDetailsActivity::class.java)
+                Intent(requireContext(), MovieDetailsActivity::class.java)
             intent.putExtra(Constants.ID_MOVIE, movieId)
             startActivity(intent)
         }
@@ -99,31 +118,23 @@ class MovieListActivity : AppCompatActivity() {
     }
 
     private fun setupAdapter(movieListAdapter: MovieListAdapter) {
-        binding.movieListRecyclerView.adapter = movieListAdapter
+        binding?.movieListRecyclerView?.adapter = movieListAdapter
         val layoutManager = LinearLayoutManager(
-            this, LinearLayoutManager.VERTICAL, false
+            requireContext(), LinearLayoutManager.VERTICAL, false
         )
-        binding.movieListRecyclerView.layoutManager = layoutManager
-
+        binding?.movieListRecyclerView?.layoutManager = layoutManager
     }
 
     private fun treatMovieListEmpty() {
-        binding.movieListRecyclerView.visibility = View.GONE
-        this.showErrorDialogWithAction(
+        binding?.movieListRecyclerView?.visibility = View.GONE
+        requireContext().showErrorDialogWithAction(
             getString(R.string.occurred_error)
         ) { _, _ -> getMovieList() }
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == android.R.id.home) {
-            finish()
-            return true
-        }
-        return super.onOptionsItemSelected(item)
-    }
-
     private fun setupToolBar() {
-        setSupportActionBar(binding.movieListToolBar)
-        supportActionBar?.title = getString(R.string.main_tool_bar_title_text)
+        (requireActivity() as AppCompatActivity).apply {
+            setSupportActionBar(binding?.movieListToolBar)
+        }
     }
 }
