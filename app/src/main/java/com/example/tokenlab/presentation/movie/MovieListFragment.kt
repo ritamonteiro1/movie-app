@@ -59,47 +59,53 @@ class MovieListFragment : Fragment() {
     private fun setupObservers() {
         setupMovieListObserver()
         setupLoadingObserver()
+        setupEmptyMovieListObserver()
         setupNetworkErrorObserver()
         setupGenericErrorObserver()
     }
 
     private fun setupLoadingObserver() {
-        viewModel.loading.observe(viewLifecycleOwner, { loading ->
+        viewModel.loading.observe(viewLifecycleOwner) { loading ->
             if (loading) {
                 loadingDialog.show()
             } else {
                 loadingDialog.dismiss()
             }
-        })
+        }
     }
 
     private fun setupNetworkErrorObserver() {
-        viewModel.networkError.observe(viewLifecycleOwner, {
+        viewModel.networkError.observe(viewLifecycleOwner) {
             binding?.movieListRecyclerView?.visibility = View.GONE
             requireContext().showErrorDialogWithAction(
                 getString(R.string.network_error)
             ) { _, _ -> getMovieList() }
-        })
+        }
     }
 
-    private fun setupGenericErrorObserver() {
-        viewModel.genericError.observe(viewLifecycleOwner, {
+    private fun setupEmptyMovieListObserver() {
+        viewModel.emptyMovieList.observe(viewLifecycleOwner) {
             binding?.movieListRecyclerView?.visibility = View.GONE
             requireContext().showErrorDialogWithAction(
                 getString(R.string.occurred_error)
             ) { _, _ -> getMovieList() }
-        })
+        }
+    }
+
+    private fun setupGenericErrorObserver() {
+        viewModel.genericError.observe(viewLifecycleOwner) {
+            binding?.movieListRecyclerView?.visibility = View.GONE
+            requireContext().showErrorDialogWithAction(
+                getString(R.string.occurred_error)
+            ) { _, _ -> getMovieList() }
+        }
     }
 
     private fun setupMovieListObserver() {
-        viewModel.movieList.observe(viewLifecycleOwner, { movieList ->
-            if (movieList.isEmpty()) {
-                treatMovieListEmpty()
-            } else {
-                binding?.movieListRecyclerView?.visibility = View.VISIBLE
-                createMovieListAdapter(movieList)
-            }
-        })
+        viewModel.movieList.observe(viewLifecycleOwner) { movieList ->
+            binding?.movieListRecyclerView?.visibility = View.VISIBLE
+            createMovieListAdapter(movieList)
+        }
     }
 
     private fun getMovieList() {
@@ -123,13 +129,6 @@ class MovieListFragment : Fragment() {
             requireContext(), LinearLayoutManager.VERTICAL, false
         )
         binding?.movieListRecyclerView?.layoutManager = layoutManager
-    }
-
-    private fun treatMovieListEmpty() {
-        binding?.movieListRecyclerView?.visibility = View.GONE
-        requireContext().showErrorDialogWithAction(
-            getString(R.string.occurred_error)
-        ) { _, _ -> getMovieList() }
     }
 
     private fun setupToolBar() {

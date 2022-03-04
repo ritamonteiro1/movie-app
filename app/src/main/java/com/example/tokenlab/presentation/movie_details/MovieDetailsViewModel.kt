@@ -20,6 +20,9 @@ class MovieDetailsViewModel(
     private val _movieDetails = MutableLiveData<MovieDetails>()
     val movieDetails: LiveData<MovieDetails> = _movieDetails
 
+    private val _emptyMovieDetails = MutableLiveData<Unit>()
+    val emptyMovieDetails: LiveData<Unit> = _emptyMovieDetails
+
     private val _networkError = MutableLiveData<Unit>()
     val networkError: LiveData<Unit> = _networkError
 
@@ -38,11 +41,14 @@ class MovieDetailsViewModel(
                 _movieDetails.postValue(movieDetails)
             } catch (e: NetworkErrorException) {
                 _loading.postValue(false)
+                _emptyMovieDetails.postValue(Unit)
+            } catch (e: NetworkErrorException) {
+                _loading.postValue(false)
                 _networkError.postValue(Unit)
-            }  catch (e: GenericErrorException) {
+            } catch (e: GenericErrorException) {
                 _loading.postValue(false)
                 _genericError.postValue(Unit)
-            } catch (e: Exception){
+            } catch (e: Exception) {
                 _loading.postValue(false)
                 _genericError.postValue(Unit)
             }

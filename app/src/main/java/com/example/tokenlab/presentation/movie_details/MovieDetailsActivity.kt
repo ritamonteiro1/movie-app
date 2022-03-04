@@ -16,15 +16,17 @@ import com.example.tokenlab.domain.model.movie_details.movie_details_list.MovieD
 import com.example.tokenlab.domain.model.movie_details.production_company.ProductionCompany
 import com.example.tokenlab.domain.model.movie_details.production_country.ProductionCountry
 import com.example.tokenlab.domain.model.movie_details.spoken_language.SpokenLanguage
-import com.example.tokenlab.extensions.*
-import com.example.tokenlab.presentation.movie_details.*
-import java.util.*
+import com.example.tokenlab.extensions.convertToValidDateFormat
+import com.example.tokenlab.extensions.createLoadingDialog
+import com.example.tokenlab.extensions.downloadImage
+import com.example.tokenlab.extensions.showErrorDialogWithAction
 import javax.inject.Inject
 
 class MovieDetailsActivity : AppCompatActivity() {
     private val component: ApplicationComponent? by lazy {
         DaggerApplicationComponent.builder().build()
     }
+
     @Inject
     lateinit var viewModel: MovieDetailsViewModel
     private lateinit var binding: ActivityMovieDetailsBinding
@@ -48,44 +50,54 @@ class MovieDetailsActivity : AppCompatActivity() {
     private fun setupObservers() {
         setupMovieDetailsObserver()
         setupLoadingObserver()
+        setupEmptyMovieDetailsObserver()
         setupNetworkErrorObserver()
         setupGenericErrorObserver()
     }
 
+    private fun setupEmptyMovieDetailsObserver() {
+        setScrollViewVisibility(View.GONE)
+        viewModel.networkError.observe(this) {
+            this@MovieDetailsActivity.showErrorDialogWithAction(
+                getString(R.string.occurred_error)
+            ) { _, _ -> finish() }
+        }
+    }
+
     private fun setupNetworkErrorObserver() {
         setScrollViewVisibility(View.GONE)
-        viewModel.networkError.observe(this, {
+        viewModel.networkError.observe(this) {
             this@MovieDetailsActivity.showErrorDialogWithAction(
                 getString(R.string.network_error)
             ) { _, _ -> finish() }
-        })
+        }
     }
 
     private fun setupGenericErrorObserver() {
         setScrollViewVisibility(View.GONE)
-        viewModel.genericError.observe(this, {
+        viewModel.genericError.observe(this) {
             this@MovieDetailsActivity.showErrorDialogWithAction(
                 getString(R.string.occurred_error)
             ) { _, _ -> finish() }
-        })
+        }
     }
 
     private fun setupLoadingObserver() {
-        viewModel.loading.observe(this, { loading ->
+        viewModel.loading.observe(this) { loading ->
             if (loading) {
                 loadingDialog.show()
             } else {
                 loadingDialog.dismiss()
             }
-        })
+        }
     }
 
     private fun setupMovieDetailsObserver() {
-        viewModel.movieDetails.observe(this, { movieDetails ->
+        viewModel.movieDetails.observe(this) { movieDetails ->
             val movieDetailsElementList = mapToMovieDetailsElementList(movieDetails)
             showMovieDetails(movieDetails, movieDetailsElementList)
             setScrollViewVisibility(View.VISIBLE)
-        })
+        }
     }
 
     private fun setScrollViewVisibility(visibility: Int) {
