@@ -12,7 +12,7 @@ class MovieRemoteDataSourceImpl(private val movieDataService: MovieDataService) 
     MovieRemoteDataSource {
     override suspend fun fetchMovieDetails(movieId: Int): MovieDetailsResponse? {
         try {
-            val movieDetailsResponse = movieDataService.recoverMovieDetails(movieId)
+            val movieDetailsResponse = movieDataService.fetchMovieDetails(movieId)
             return movieDetailsResponse.body()
         } catch (e: UnknownHostException) {
             throw NetworkErrorException()
@@ -24,7 +24,7 @@ class MovieRemoteDataSourceImpl(private val movieDataService: MovieDataService) 
 
     override suspend fun fetchMovieList(): List<MovieResponse>? {
         try {
-            val movieListResponse = movieDataService.recoverMovieList()
+            val movieListResponse = movieDataService.fetchMovieList()
             return movieListResponse.body()
         } catch (e: UnknownHostException) {
             throw NetworkErrorException()

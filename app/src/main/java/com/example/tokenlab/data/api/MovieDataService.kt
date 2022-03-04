@@ -8,10 +8,10 @@ import retrofit2.http.Path
 
 interface MovieDataService {
     @GET("movies")
-    suspend fun recoverMovieList(): Response<List<MovieResponse>>
+    suspend fun fetchMovieList(): Response<List<MovieResponse>>
 
     @GET("movies/{id}")
-    suspend fun recoverMovieDetails(
+    suspend fun fetchMovieDetails(
         @Path("id") id: Int
     ): Response<MovieDetailsResponse>
 }
