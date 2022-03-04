@@ -1,10 +1,10 @@
 package com.example.tokenlab.domain.use_case
 
-import com.example.tokenlab.domain.data_repository.MovieDataRepository
+import com.example.tokenlab.domain.repository.MovieRepository
 import com.example.tokenlab.domain.model.movie.Movie
 
-class GetMovieListUseCaseImpl(private val movieDataRepository: MovieDataRepository): GetMovieListUseCase {
+class GetMovieListUseCaseImpl(private val movieRepository: MovieRepository): GetMovieListUseCase {
     override suspend fun getMovieList(): List<Movie> {
-        return movieDataRepository.fetchMovieList()
+        return movieRepository.fetchMovieList()
     }
 }

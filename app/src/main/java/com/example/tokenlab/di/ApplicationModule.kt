@@ -4,8 +4,8 @@ import com.example.tokenlab.data.api.Api
 import com.example.tokenlab.data.api.MovieDataService
 import com.example.tokenlab.data.remote.remote_data_source.MovieRemoteDataSource
 import com.example.tokenlab.data.remote.remote_data_source.MovieRemoteDataSourceImpl
-import com.example.tokenlab.data.repository.MovieRepository
-import com.example.tokenlab.domain.data_repository.MovieDataRepository
+import com.example.tokenlab.data.repository.MovieRepositoryImpl
+import com.example.tokenlab.domain.repository.MovieRepository
 import com.example.tokenlab.domain.use_case.GetMovieDetailsUseCase
 import com.example.tokenlab.domain.use_case.GetMovieDetailsUseCaseImpl
 import com.example.tokenlab.domain.use_case.GetMovieListUseCase
@@ -24,14 +24,14 @@ class ApplicationModule {
     fun getMovieRemoteDataSource(movieDataService: MovieDataService): MovieRemoteDataSource =
         MovieRemoteDataSourceImpl(movieDataService)
     @Provides
-    fun getMovieRepository(movieRemoteDataSource: MovieRemoteDataSource): MovieDataRepository =
-        MovieRepository(movieRemoteDataSource)
+    fun getMovieRepository(movieRemoteDataSource: MovieRemoteDataSource): MovieRepository =
+        MovieRepositoryImpl(movieRemoteDataSource)
     @Provides
-    fun getMovieListUseCase(movieDataRepository: MovieDataRepository): GetMovieListUseCase =
-        GetMovieListUseCaseImpl(movieDataRepository)
+    fun getMovieListUseCase(movieRepository: MovieRepository): GetMovieListUseCase =
+        GetMovieListUseCaseImpl(movieRepository)
     @Provides
-    fun getMovieDetailsUseCase(movieDataRepository: MovieDataRepository): GetMovieDetailsUseCase =
-        GetMovieDetailsUseCaseImpl(movieDataRepository)
+    fun getMovieDetailsUseCase(movieRepository: MovieRepository): GetMovieDetailsUseCase =
+        GetMovieDetailsUseCaseImpl(movieRepository)
     @Provides
     fun getMovieListViewModel(getMovieListUseCase: GetMovieListUseCase) =
         MovieListViewModel(getMovieListUseCase)
