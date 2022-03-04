@@ -10,4 +10,4 @@ Obs: tela de favoritos ainda não implementada
 
 ##
 
-<img height="480px" src="app/src/images_read_me/image1.jpeg"> <img height="480px" src="app/src/images_read_me/image2.jpeg"> <img height="480px" src="app/src/images_read_me/image3.jpeg">
+<img height="480px" src="images_read_me/image1.jpeg"> <img height="480px" src="images_read_me/image2.jpeg"> <img height="480px" src="images_read_me/image3.jpeg">
