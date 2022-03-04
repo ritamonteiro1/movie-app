@@ -8,27 +8,28 @@ import com.example.tokenlab.domain.model.movie_details.details.MovieDetails
 import com.example.tokenlab.domain.model.movie_details.production_company.ProductionCompany
 import com.example.tokenlab.domain.model.movie_details.production_country.ProductionCountry
 import com.example.tokenlab.domain.model.movie_details.spoken_language.SpokenLanguage
+import com.example.tokenlab.extensions.convertIfIsNullOrBlank
 
 fun MovieDetailsResponse.convertToMovieDetailsModel(): MovieDetails {
     return MovieDetails(
-        this.title ?: Constants.NULL_STRING_RESPONSE,
+        this.title.convertIfIsNullOrBlank(),
         this.voteAverage ?: Constants.NULL_DOUBLE_RESPONSE,
         this.voteCount ?: Constants.NULL_INT_RESPONSE,
         this.releaseDate.orEmpty(),
         this.posterUrl.orEmpty(),
-        this.originalLanguage ?: Constants.NULL_STRING_RESPONSE,
-        this.originalTitle ?: Constants.NULL_STRING_RESPONSE,
-        this.tagline ?: Constants.NULL_STRING_RESPONSE,
+        this.originalLanguage.convertIfIsNullOrBlank(),
+        this.originalTitle.convertIfIsNullOrBlank(),
+        this.tagline.convertIfIsNullOrBlank(),
         this.spokenLanguages?.map {
-            SpokenLanguage(it.name ?: Constants.NULL_STRING_RESPONSE)
+            SpokenLanguage(it.name.convertIfIsNullOrBlank())
         } ?: emptyList(),
         this.productionCountries?.map {
-            ProductionCountry(it.name ?: Constants.NULL_STRING_RESPONSE)
+            ProductionCountry(it.name.convertIfIsNullOrBlank())
         } ?: emptyList(),
         this.productionCompanies?.map {
             ProductionCompany(
-                it.name ?: Constants.NULL_STRING_RESPONSE,
-                it.originCountry ?: Constants.NULL_STRING_RESPONSE,
+                it.name.convertIfIsNullOrBlank(),
+                it.originCountry.convertIfIsNullOrBlank(),
                 it.logoUrl.orEmpty()
             )
         } ?: emptyList(),
@@ -43,7 +44,7 @@ fun List<MovieResponse>.convertToMovieListModel(): List<Movie> {
         Movie(
             movieListResponse.id ?: Constants.NULL_INT_RESPONSE,
             movieListResponse.voteAverage ?: Constants.NULL_DOUBLE_RESPONSE,
-            movieListResponse.title ?: Constants.NULL_STRING_RESPONSE,
+            movieListResponse.title.convertIfIsNullOrBlank(),
             movieListResponse.imageUrl.orEmpty(),
             movieListResponse.releaseDate.orEmpty()
         )
