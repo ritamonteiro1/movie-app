@@ -1,4 +1,4 @@
 package com.example.tokenlab.domain.exception
 
-class GenericErrorException : Exception() {
+class NullResponseException : Exception() {
 }
