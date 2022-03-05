@@ -6,7 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.tokenlab.domain.exception.GenericErrorException
-import com.example.tokenlab.domain.exception.NullResponseException
+import com.example.tokenlab.domain.exception.NetworkException
 import com.example.tokenlab.domain.model.movie.Movie
 import com.example.tokenlab.domain.use_case.GetMovieListUseCase
 import kotlinx.coroutines.Dispatchers
@@ -39,7 +39,7 @@ class MovieListViewModel(
                 val movies = getMovieListUseCase.getMovieList()
                 _loading.postValue(false)
                 _movieList.postValue(movies)
-            } catch (e: NullResponseException) {
+            } catch (e: NetworkException) {
                 _loading.postValue(false)
                 _emptyMovieList.postValue(Unit)
             } catch (e: NetworkErrorException) {

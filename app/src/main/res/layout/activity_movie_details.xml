@@ -12,6 +12,7 @@
         android:background="@color/blue_dd4"
         android:minHeight="?attr/actionBarSize"
         android:theme="@style/AppTheme.Toolbar"
+        android:title="@string/movie_details_tool_bar_title_text"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -21,13 +22,13 @@
         android:id="@+id/movieDetailsScrollView"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        android:visibility="gone"
-        tools:visibility="visible"
-        app:layout_constraintTop_toBottomOf="@+id/movieDetailsToolBar">
+        app:layout_constraintTop_toBottomOf="@+id/movieDetailsToolBar"
+        tools:visibility="visible">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/movieDetailsConstraintLayout"

@@ -1,11 +1,10 @@
 package com.example.tokenlab.data.remote.remote_data_source
 
-import android.accounts.NetworkErrorException
 import com.example.tokenlab.data.api.MovieDataService
 import com.example.tokenlab.data.mapper.convertToMovieDetailsModel
 import com.example.tokenlab.data.mapper.convertToMovieListModel
 import com.example.tokenlab.domain.exception.GenericErrorException
-import com.example.tokenlab.domain.exception.NullResponseException
+import com.example.tokenlab.domain.exception.NetworkException
 import com.example.tokenlab.domain.model.movie.Movie
 import com.example.tokenlab.domain.model.movie_details.details.MovieDetails
 import java.net.SocketTimeoutException
@@ -17,16 +16,11 @@ class MovieRemoteDataSourceImpl(private val movieDataService: MovieDataService) 
     override suspend fun fetchMovieDetails(movieId: Int): MovieDetails {
         try {
             val response = movieDataService.fetchMovieDetails(movieId)
-            val movieDetailsResponse = response.body()
-            if (movieDetailsResponse != null) {
-                return movieDetailsResponse.convertToMovieDetailsModel()
-            } else {
-                throw NullResponseException()
-            }
+            return response.convertToMovieDetailsModel()
         } catch (e: UnknownHostException) {
-            throw NetworkErrorException()
+            throw NetworkException()
         } catch (e: SocketTimeoutException) {
-            throw NetworkErrorException()
+            throw NetworkException()
         } catch (e: Exception) {
             throw GenericErrorException()
         }
@@ -35,16 +29,11 @@ class MovieRemoteDataSourceImpl(private val movieDataService: MovieDataService) 
     override suspend fun fetchMovieList(): List<Movie> {
         try {
             val response = movieDataService.fetchMovieList()
-            val movieListResponse = response.body()
-            if (movieListResponse != null) {
-                return movieListResponse.convertToMovieListModel()
-            } else {
-                throw NullResponseException()
-            }
+            return response.convertToMovieListModel()
         } catch (e: UnknownHostException) {
-            throw NetworkErrorException()
+            throw NetworkException()
         } catch (e: SocketTimeoutException) {
-            throw NetworkErrorException()
+            throw NetworkException()
         } catch (e: Exception) {
             throw GenericErrorException()
         }

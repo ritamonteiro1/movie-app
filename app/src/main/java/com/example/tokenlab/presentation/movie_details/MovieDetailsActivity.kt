@@ -11,6 +11,7 @@ import com.example.tokenlab.constants.Constants
 import com.example.tokenlab.databinding.ActivityMovieDetailsBinding
 import com.example.tokenlab.di.ApplicationComponent
 import com.example.tokenlab.di.DaggerApplicationComponent
+import com.example.tokenlab.domain.exception.NetworkException
 import com.example.tokenlab.domain.model.movie_details.details.MovieDetails
 import com.example.tokenlab.domain.model.movie_details.movie_details_list.MovieDetailsElement
 import com.example.tokenlab.domain.model.movie_details.production_company.ProductionCompany
@@ -37,8 +38,8 @@ class MovieDetailsActivity : AppCompatActivity() {
         binding = ActivityMovieDetailsBinding.inflate(layoutInflater)
         setContentView(binding.root)
         component?.injectInMovieDetailsActivity(this)
+        setSupportActionBar(binding.movieDetailsToolBar)
         setupObservers()
-        setupToolBar()
         val movieId = retrieverMovieId()
         getMovieDetails(movieId)
     }
@@ -50,35 +51,18 @@ class MovieDetailsActivity : AppCompatActivity() {
     private fun setupObservers() {
         setupMovieDetailsObserver()
         setupLoadingObserver()
-        setupEmptyMovieDetailsObserver()
-        setupNetworkErrorObserver()
-        setupGenericErrorObserver()
+        setupErrorObserver()
     }
 
-    private fun setupEmptyMovieDetailsObserver() {
+    private fun setupErrorObserver() {
         setScrollViewVisibility(View.GONE)
-        viewModel.networkError.observe(this) {
-            this@MovieDetailsActivity.showErrorDialogWithAction(
-                getString(R.string.occurred_error)
-            ) { _, _ -> finish() }
-        }
-    }
+        viewModel.error.observe(this) { throwable ->
+            val errorMessage = when (throwable) {
+                is NetworkException -> getString(R.string.network_error)
+                else -> getString(R.string.occurred_error)
+            }
 
-    private fun setupNetworkErrorObserver() {
-        setScrollViewVisibility(View.GONE)
-        viewModel.networkError.observe(this) {
-            this@MovieDetailsActivity.showErrorDialogWithAction(
-                getString(R.string.network_error)
-            ) { _, _ -> finish() }
-        }
-    }
-
-    private fun setupGenericErrorObserver() {
-        setScrollViewVisibility(View.GONE)
-        viewModel.genericError.observe(this) {
-            this@MovieDetailsActivity.showErrorDialogWithAction(
-                getString(R.string.occurred_error)
-            ) { _, _ -> finish() }
+            showErrorDialogWithAction(errorMessage) { _, _ -> finish() }
         }
     }
 
@@ -223,10 +207,5 @@ class MovieDetailsActivity : AppCompatActivity() {
             return true
         }
         return super.onOptionsItemSelected(item)
-    }
-
-    private fun setupToolBar() {
-        setSupportActionBar(binding.movieDetailsToolBar)
-        supportActionBar?.title = getString(R.string.movie_details_tool_bar_title_text)
     }
 }
