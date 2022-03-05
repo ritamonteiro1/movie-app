@@ -4,9 +4,7 @@ Este app é o desafio de estágio em Desenvolvimento Android da empresa Tokenlab
 Nessa tela foi feita uma requisição para obter a lista de filmes
 
 2. Tela de detalhes de um filme:
-Nessa tela foi feita uma requisição para obter os detalhes de um filme clicado na tela anterior
-   
-Obs: tela de favoritos ainda não implementada
+Nessa tela foi feita uma nova requisição para obter os detalhes de um filme clicado na tela anterior
 
 ##
 
