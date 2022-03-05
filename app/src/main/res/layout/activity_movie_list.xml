@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/blue_dd4"
-    tools:context=".presentation.movie.MovieListFragment">
+    tools:context=".presentation.movie.MovieListActivity">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/movieListToolBar"

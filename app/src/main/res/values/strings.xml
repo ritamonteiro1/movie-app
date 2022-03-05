@@ -19,7 +19,7 @@
     <string name="network_error">Falha na conexão. Tente novamente</string>
     <!--    Alert Dialog Messages-->
     <string name="alert_dialog_text">OK</string>
-    <!--    fragment_movie_list.xml-->
+    <!--    activity_movie_list.xml-->
     <string name="movie_list_tool_bar_title_text">Lista de filmes</string>
     <!--    fragment_favorite_movie_list.xml-->
     <string name="favorite_movie_list_tool_bar_title_text">Filmes favoritos</string>
