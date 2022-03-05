@@ -14,6 +14,7 @@ import com.example.tokenlab.constants.Constants
 import com.example.tokenlab.databinding.FragmentMovieListBinding
 import com.example.tokenlab.di.ApplicationComponent
 import com.example.tokenlab.di.DaggerApplicationComponent
+import com.example.tokenlab.domain.exception.NetworkException
 import com.example.tokenlab.domain.model.movie.Movie
 import com.example.tokenlab.extensions.createLoadingDialog
 import com.example.tokenlab.extensions.showErrorDialogWithAction
@@ -59,9 +60,7 @@ class MovieListFragment : Fragment() {
     private fun setupObservers() {
         setupMovieListObserver()
         setupLoadingObserver()
-        setupEmptyMovieListObserver()
-        setupNetworkErrorObserver()
-        setupGenericErrorObserver()
+        setupErrorObserver()
     }
 
     private fun setupLoadingObserver() {
@@ -74,29 +73,15 @@ class MovieListFragment : Fragment() {
         }
     }
 
-    private fun setupNetworkErrorObserver() {
-        viewModel.networkError.observe(viewLifecycleOwner) {
-            binding?.movieListRecyclerView?.visibility = View.GONE
+    private fun setupErrorObserver() {
+        binding?.movieListRecyclerView?.visibility = View.GONE
+        viewModel.error.observe(viewLifecycleOwner) { throwable ->
+            val errorMessage = when (throwable) {
+                is NetworkException -> getString(R.string.network_error)
+                else -> getString(R.string.occurred_error)
+            }
             requireContext().showErrorDialogWithAction(
-                getString(R.string.network_error)
-            ) { _, _ -> getMovieList() }
-        }
-    }
-
-    private fun setupEmptyMovieListObserver() {
-        viewModel.emptyMovieList.observe(viewLifecycleOwner) {
-            binding?.movieListRecyclerView?.visibility = View.GONE
-            requireContext().showErrorDialogWithAction(
-                getString(R.string.occurred_error)
-            ) { _, _ -> getMovieList() }
-        }
-    }
-
-    private fun setupGenericErrorObserver() {
-        viewModel.genericError.observe(viewLifecycleOwner) {
-            binding?.movieListRecyclerView?.visibility = View.GONE
-            requireContext().showErrorDialogWithAction(
-                getString(R.string.occurred_error)
+                errorMessage
             ) { _, _ -> getMovieList() }
         }
     }
