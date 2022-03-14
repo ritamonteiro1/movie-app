@@ -8,7 +8,7 @@ Nessa tela foi feita uma nova requisição para obter os detalhes de um filme cl
 
 Principais bibliotecas utilizadas:
 - Gerenciamento de estado: ViewModel, Coroutines
-- Requisição api REST: Retrofit
+- Requisições api REST: Retrofit
 - Download de imagens: Glide
 - Injeção de dependência: Dagger2
 
